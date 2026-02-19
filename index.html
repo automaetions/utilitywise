@@ -1,0 +1,79 @@
+function formatMoney(value) {
+    return "₱" + value.toLocaleString("en-PH", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function calculate() {
+    let rate = parseFloat(document.getElementById("rate").value);
+
+    if (!rate || rate <= 0) {
+        alert("Please enter a valid Cost per kWh before analyzing.");
+        return;
+    }
+
+    let appliances = [];
+    let totalYearly = 0;
+
+    for (let i = 1; i <= 5; i++) {
+        let name = document.getElementById("name" + i).value;
+        let watts = parseFloat(document.getElementById("watts" + i).value) || 0;
+        let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
+
+        if (name && watts > 0 && hours > 0) {
+            let yearlyCost = (watts / 1000) * hours * 365 * rate;
+            let monthlyCost = yearlyCost / 12;
+
+            totalYearly += yearlyCost;
+
+            appliances.push({
+                name,
+                yearlyCost,
+                monthlyCost
+            });
+        }
+    }
+
+    if (appliances.length === 0) {
+        alert("Please enter at least one appliance correctly.");
+        return;
+    }
+
+    appliances.sort((a, b) => b.yearlyCost - a.yearlyCost);
+
+    let totalMonthly = totalYearly / 12;
+
+    let output = `
+    <div class="dashboard">
+        <h2>Energy Cost Dashboard</h2>
+        <p><strong>Total Estimated Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
+        <p><strong>Total Estimated Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
+
+        <h3>Appliance Ranking (Highest Cost First)</h3>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Appliance</th>
+                <th>Monthly Cost</th>
+                <th>Yearly Cost</th>
+            </tr>
+    `;
+
+    appliances.forEach((item, index) => {
+        let highlight = index === 0 ? "class='highlight'" : "";
+        output += `
+        <tr ${highlight}>
+            <td>${index + 1}</td>
+            <td>${item.name}</td>
+            <td>${formatMoney(item.monthlyCost)}</td>
+            <td>${formatMoney(item.yearlyCost)}</td>
+        </tr>`;
+    });
+
+    output += `</table>
+        <p><strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.</p>
+    </div>`;
+
+    document.getElementById("results").innerHTML = output;
+}
