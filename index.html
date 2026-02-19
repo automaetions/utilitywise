@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UtilityWise Energy Analyzer</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -16,82 +15,113 @@ body {
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 900px;
     margin: auto;
     padding: 40px 20px;
 }
 
-h1 { text-align:center; }
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    opacity: 0.8;
+    margin-bottom: 30px;
+}
 
 .card {
-    background:#fff;
-    color:#111;
-    border-radius:12px;
-    padding:25px;
-    margin-bottom:30px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    background: #fff;
+    color: #111;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
 }
 
-.grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:20px;
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-select,input[type=number],input[type=text] {
-    width:100%;
-    padding:8px;
-    border-radius:8px;
-    border:1px solid #ccc;
+input[type=range] {
+    margin-bottom: 5px;
 }
-
-input[type=range] { width:100%; }
 
 button {
-    background:#2EA3F2;
-    border:none;
-    padding:14px;
-    border-radius:8px;
-    color:white;
-    font-weight:600;
-    cursor:pointer;
-    width:100%;
-    margin-top:20px;
+    background: #2EA3F2;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button.secondary {
+    background: #0B2A4A;
+    border: 1px solid #2EA3F2;
+}
+
+.appliance-card {
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 .dashboard {
-    background:#fff;
-    color:#111;
-    padding:25px;
-    border-radius:12px;
+    background: #fff;
+    color: #111;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
 }
 
-.metric-box {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:15px;
-    margin-bottom:20px;
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .metric {
-    background:#f4f7fb;
-    padding:15px;
-    border-radius:8px;
+    background: #f4f7fb;
+    padding: 15px;
+    border-radius: 10px;
 }
 
-table { width:100%; border-collapse:collapse; }
-
-th,td {
-    padding:10px;
-    text-align:center;
-    border-bottom:1px solid #ddd;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-th { background:#2EA3F2; color:#fff; }
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
 
-.highlight { background:#fff3cd; }
+th {
+    background: #2EA3F2;
+    color: white;
+}
 
-.custom-fields { display:none; margin-top:8px; }
+.highlight {
+    background: #fff3cd;
+}
+
+.remove-btn {
+    background: #C62828;
+    margin-top: 10px;
+}
 </style>
 </head>
 
@@ -99,17 +129,17 @@ th { background:#2EA3F2; color:#fff; }
 
 <div class="container">
 
-<h1>UtilityWise Smart Energy Analyzer</h1>
+<h1>UtilityWise Energy Analyzer</h1>
+<p class="subtitle">Smart cost insights for modern homes</p>
 
 <div class="card">
-
 <label>Cost per kWh (₱)</label>
 <input type="number" id="rate" placeholder="Example: 13">
 
-<div class="grid" id="applianceGrid"></div>
+<div id="applianceContainer"></div>
 
+<button class="secondary" onclick="addAppliance()">+ Add Appliance</button>
 <button onclick="calculate()">Analyze Energy Cost</button>
-
 </div>
 
 <div id="results"></div>
@@ -118,149 +148,134 @@ th { background:#2EA3F2; color:#fff; }
 
 <script>
 
-const appliancesList=[
-{name:"Air Conditioner",watts:1000},
-{name:"Refrigerator",watts:150},
-{name:"Electric Fan",watts:75},
-{name:"LED TV",watts:120},
-{name:"Rice Cooker",watts:1000},
-{name:"Electric Shower",watts:2000},
-{name:"Washing Machine",watts:1500}
-];
+let applianceCount = 0;
 
-const grid=document.getElementById("applianceGrid");
+function addAppliance() {
+    applianceCount++;
+    const container = document.getElementById("applianceContainer");
 
-for(let i=1;i<=4;i++){
-grid.innerHTML+=`
-<div>
-<label>Appliance</label>
-<select id="appliance${i}" onchange="toggleCustom(${i})">
-<option value="">Select</option>
-${appliancesList.map(a=>`<option value="${a.watts}">${a.name} (${a.watts}W)</option>`).join("")}
-<option value="custom">Other (Custom Appliance)</option>
-</select>
+    const card = document.createElement("div");
+    card.className = "appliance-card";
+    card.id = "applianceCard" + applianceCount;
 
-<div class="custom-fields" id="custom${i}">
-<label>Appliance Name</label>
-<input type="text" id="customName${i}" placeholder="Brand + Model">
+    card.innerHTML = `
+        <label>Appliance Name</label>
+        <input type="text" id="name${applianceCount}" placeholder="e.g. Daikin 1.5HP">
 
-<label>Exact Wattage</label>
-<input type="number" id="customWatts${i}" placeholder="Enter exact watts">
-</div>
+        <label>Wattage (W)</label>
+        <input type="number" id="watts${applianceCount}" placeholder="Enter watts">
 
-<label>Quantity</label>
-<input type="number" id="qty${i}" value="1">
+        <label>Quantity</label>
+        <input type="number" id="qty${applianceCount}" value="1">
 
-<label>Hours / Day</label>
-<input type="range" id="hours${i}" min="0" max="24" value="0"
-oninput="document.getElementById('hval${i}').innerText=this.value">
-<small><span id="hval${i}">0</span> hrs</small>
+        <label>Hours / Day</label>
+        <input type="range" id="hours${applianceCount}" min="0" max="24" value="0"
+        oninput="document.getElementById('hval${applianceCount}').innerText=this.value">
+        <small><span id="hval${applianceCount}">0</span> hrs</small>
 
-<label>Reduce Hours</label>
-<input type="range" id="reduce${i}" min="0" max="10" value="0"
-oninput="document.getElementById('rval${i}').innerText=this.value">
-<small><span id="rval${i}">0</span> hrs</small>
+        <label>Reduce Hours</label>
+        <input type="range" id="reduce${applianceCount}" min="0" max="10" value="0"
+        oninput="document.getElementById('rval${applianceCount}').innerText=this.value">
+        <small><span id="rval${applianceCount}">0</span> hrs</small>
 
-</div>
-`;
+        <button class="remove-btn" onclick="removeAppliance(${applianceCount})">Remove</button>
+    `;
+
+    container.appendChild(card);
 }
 
-function toggleCustom(i){
-let select=document.getElementById("appliance"+i);
-let custom=document.getElementById("custom"+i);
-if(select.value==="custom"){
-custom.style.display="block";
-}else{
-custom.style.display="none";
-}
+function removeAppliance(id) {
+    const card = document.getElementById("applianceCard" + id);
+    if (card) card.remove();
 }
 
-function formatMoney(v){
-return "₱"+v.toLocaleString("en-PH",{minimumFractionDigits:2});
+function formatMoney(value) {
+    return "₱" + value.toLocaleString("en-PH", { minimumFractionDigits: 2 });
 }
 
-function calculate(){
+function calculate() {
 
-let rate=parseFloat(document.getElementById("rate").value);
-if(!rate||rate<=0){alert("Enter valid cost per kWh");return;}
+    let rate = parseFloat(document.getElementById("rate").value);
+    if (!rate || rate <= 0) {
+        alert("Enter valid cost per kWh.");
+        return;
+    }
 
-let appliances=[];
-let totalYearly=0;
-let totalReduced=0;
+    let appliances = [];
+    let totalYearly = 0;
+    let totalReduced = 0;
 
-for(let i=1;i<=4;i++){
+    for (let i = 1; i <= applianceCount; i++) {
 
-let select=document.getElementById("appliance"+i);
-let qty=parseFloat(document.getElementById("qty"+i).value)||1;
-let hours=parseFloat(document.getElementById("hours"+i).value)||0;
-let reduce=parseFloat(document.getElementById("reduce"+i).value)||0;
+        if (!document.getElementById("name" + i)) continue;
 
-let watts=0;
-let name="";
+        let name = document.getElementById("name" + i).value;
+        let watts = parseFloat(document.getElementById("watts" + i).value) || 0;
+        let qty = parseFloat(document.getElementById("qty" + i).value) || 1;
+        let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
+        let reduce = parseFloat(document.getElementById("reduce" + i).value) || 0;
 
-if(select.value==="custom"){
-name=document.getElementById("customName"+i).value||"Custom Appliance";
-watts=parseFloat(document.getElementById("customWatts"+i).value)||0;
-}else{
-watts=parseFloat(select.value)||0;
-name=select.options[select.selectedIndex].text;
+        if (name && watts > 0 && hours > 0) {
+
+            let yearly = qty * (watts / 1000) * hours * 365 * rate;
+            let newHours = Math.max(hours - reduce, 0);
+            let reduced = qty * (watts / 1000) * newHours * 365 * rate;
+            let savings = yearly - reduced;
+
+            totalYearly += yearly;
+            totalReduced += reduced;
+
+            appliances.push({ name, yearly, reduced, savings });
+        }
+    }
+
+    if (appliances.length === 0) {
+        alert("Add at least one valid appliance.");
+        return;
+    }
+
+    appliances.sort((a, b) => b.yearly - a.yearly);
+
+    let output = `
+    <div class="dashboard">
+        <h2>Energy Dashboard</h2>
+
+        <div class="metric-grid">
+            <div class="metric"><small>Monthly Cost</small><strong>${formatMoney(totalYearly / 12)}</strong></div>
+            <div class="metric"><small>Yearly Cost</small><strong>${formatMoney(totalYearly)}</strong></div>
+            <div class="metric"><small>New Yearly Cost</small><strong>${formatMoney(totalReduced)}</strong></div>
+            <div class="metric"><small>Total Savings</small><strong>${formatMoney(totalYearly - totalReduced)}</strong></div>
+        </div>
+
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Appliance</th>
+                <th>Yearly</th>
+                <th>After Reduction</th>
+                <th>Savings</th>
+            </tr>
+    `;
+
+    appliances.forEach((a, i) => {
+        let highlight = i === 0 ? "class='highlight'" : "";
+        output += `
+        <tr ${highlight}>
+            <td>${i + 1}</td>
+            <td>${a.name}</td>
+            <td>${formatMoney(a.yearly)}</td>
+            <td>${formatMoney(a.reduced)}</td>
+            <td>${formatMoney(a.savings)}</td>
+        </tr>`;
+    });
+
+    output += "</table></div>";
+
+    document.getElementById("results").innerHTML = output;
 }
 
-if(watts>0 && hours>0){
-
-let yearly=qty*(watts/1000)*hours*365*rate;
-let newHours=Math.max(hours-reduce,0);
-let reduced=qty*(watts/1000)*newHours*365*rate;
-let savings=yearly-reduced;
-
-totalYearly+=yearly;
-totalReduced+=reduced;
-
-appliances.push({name,yearly,reduced,savings});
-}
-}
-
-if(appliances.length===0){alert("Select at least one appliance.");return;}
-
-appliances.sort((a,b)=>b.yearly-a.yearly);
-
-let output=`
-<div class="dashboard">
-<h2>Energy Dashboard</h2>
-
-<div class="metric-box">
-<div class="metric"><small>Monthly Cost</small><strong>${formatMoney(totalYearly/12)}</strong></div>
-<div class="metric"><small>Yearly Cost</small><strong>${formatMoney(totalYearly)}</strong></div>
-<div class="metric"><small>New Yearly Cost</small><strong>${formatMoney(totalReduced)}</strong></div>
-<div class="metric"><small>Total Savings</small><strong>${formatMoney(totalYearly-totalReduced)}</strong></div>
-</div>
-
-<table>
-<tr>
-<th>Rank</th>
-<th>Appliance</th>
-<th>Yearly</th>
-<th>After Reduction</th>
-<th>Savings</th>
-</tr>
-`;
-
-appliances.forEach((a,i)=>{
-let highlight=i===0?"class='highlight'":"";
-output+=`
-<tr ${highlight}>
-<td>${i+1}</td>
-<td>${a.name}</td>
-<td>${formatMoney(a.yearly)}</td>
-<td>${formatMoney(a.reduced)}</td>
-<td>${formatMoney(a.savings)}</td>
-</tr>`;
-});
-
-output+=`</table></div>`;
-
-document.getElementById("results").innerHTML=output;
-}
+// Add first appliance by default
+addAppliance();
 
 </script>
 
