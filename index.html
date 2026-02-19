@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UtilityWise Appliance Calculator</title>
+<title>UtilityWise Energy Analyzer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
 --green:#4CD137;
 --dark:#0B1F3A;
---text:#1C2B39;
+--text:#1F2D3D;
 --muted:#6B7B8C;
 --card:#F3F7FA;
 }
@@ -25,35 +25,56 @@ color:var(--text);
 }
 
 header{
-padding:30px 20px;
 text-align:center;
+padding:30px 20px 10px;
 }
 
 header img{
 height:55px;
-margin-bottom:10px;
 }
 
 .container{
-max-width:600px;
+max-width:900px;
 margin:auto;
 padding:20px;
 }
 
+.toggle{
+display:flex;
+justify-content:center;
+margin:20px 0;
+}
+
+.toggle-wrapper{
+background:#E9EEF3;
+border-radius:30px;
+padding:4px;
+display:inline-flex;
+}
+
+.toggle-btn{
+padding:10px 20px;
+border-radius:30px;
+cursor:pointer;
+font-weight:600;
+color:var(--muted);
+}
+
+.toggle-btn.active{
+background:var(--green);
+color:white;
+}
+
 .card{
 background:var(--card);
-border-radius:18px;
+border-radius:20px;
 padding:25px;
 margin-bottom:20px;
 }
 
-h2{
-margin-top:0;
-}
-
 input{
 width:100%;
-padding:14px;
+padding:12px;
 border-radius:14px;
 border:1px solid #D9E3EC;
 margin-top:8px;
@@ -65,8 +86,8 @@ border:none;
 border-radius:14px;
 padding:14px;
 font-weight:600;
-font-size:16px;
 cursor:pointer;
+font-size:16px;
 }
 
 .primary{
@@ -98,15 +119,11 @@ border-radius:50%;
 border:2px solid var(--green);
 background:white;
 color:var(--green);
-font-size:18px;
 display:flex;
 align-items:center;
 justify-content:center;
 cursor:pointer;
-}
-
-input[type=range]{
-flex:1;
+font-size:18px;
 }
 
 .days{
@@ -146,17 +163,31 @@ padding:25px;
 text-align:center;
 }
 
-.result-card h3{
-margin:0;
-font-size:16px;
-color:var(--muted);
-}
-
 .result-card strong{
 display:block;
 margin-top:10px;
-font-size:26px;
-color:var(--dark);
+font-size:24px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+font-size:13px;
+}
+
+th,td{
+padding:8px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+.hidden{
+display:none;
+}
+
+@media(max-width:768px){
+.result-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -165,23 +196,32 @@ color:var(--dark);
 
 <header>
 <img src="UtilityWise.png">
-<h2>Appliance Energy Calculator</h2>
 </header>
 
 <div class="container">
 
+<div class="toggle">
+<div class="toggle-wrapper">
+<div class="toggle-btn active" id="singleBtn">Single Appliance</div>
+<div class="toggle-btn" id="multiBtn">Full Home Analyzer</div>
+</div>
+</div>
+
+<!-- SINGLE MODE -->
+<div id="singleMode">
+
 <div class="card">
 <label>Electricity Rate (₱ per kWh)</label>
-<input type="number" id="rate" value="13">
+<input type="number" id="rateSingle" value="13">
 
 <label style="margin-top:20px;">Appliance Wattage</label>
-<input type="number" id="watts" placeholder="Enter watts">
+<input type="number" id="wattsSingle" placeholder="Enter watts">
 
 <h3 style="margin-top:25px;">Hours used per day</h3>
 
 <div class="slider-wrapper">
 <div class="circle-btn" onclick="changeHours(-1)">−</div>
-<input type="range" id="hours" min="1" max="24" value="1">
+<input type="range" id="hoursSingle" min="1" max="24" value="1">
 <div class="circle-btn" onclick="changeHours(1)">+</div>
 </div>
 
@@ -203,57 +243,96 @@ color:var(--dark);
 <h3 style="margin-top:25px;">Weeks used per month</h3>
 
 <div style="margin-top:10px;">
-<label><input type="radio" name="weeks" value="1"> 1 week</label><br>
-<label><input type="radio" name="weeks" value="2"> 2 weeks</label><br>
-<label><input type="radio" name="weeks" value="3"> 3 weeks</label><br>
-<label><input type="radio" name="weeks" value="4" checked> 4 weeks</label>
+<label><input type="radio" name="weeksSingle" value="1"> 1 week</label><br>
+<label><input type="radio" name="weeksSingle" value="2"> 2 weeks</label><br>
+<label><input type="radio" name="weeksSingle" value="3"> 3 weeks</label><br>
+<label><input type="radio" name="weeksSingle" value="4" checked> 4 weeks</label>
 </div>
 
-<button class="primary" onclick="calculate()">Calculate</button>
-</div>
+<button class="primary" onclick="calculateSingle()">Calculate</button>
 
-<div class="card" id="resultSection" style="display:none;">
-<h2>Estimated cost to operate</h2>
-
+<div id="singleResult" class="hidden">
 <div class="result-grid">
 <div class="result-card">
-<h3>Cost per hour</h3>
-<strong id="perHour">₱0</strong>
+<strong id="perHour"></strong>
 </div>
-
 <div class="result-card">
-<h3>Cost per day</h3>
-<strong id="perDay">₱0</strong>
+<strong id="perDay"></strong>
 </div>
-
 <div class="result-card">
-<h3>Cost per week</h3>
-<strong id="perWeek">₱0</strong>
+<strong id="perWeek"></strong>
 </div>
-
 <div class="result-card">
-<h3>Cost per month</h3>
-<strong id="perMonth">₱0</strong>
+<strong id="perMonth"></strong>
+</div>
+</div>
+<button class="outline" onclick="resetSingle()">Compute Another</button>
+</div>
+
 </div>
 </div>
 
-<button class="outline" onclick="resetApp()">Compute Another</button>
+<!-- MULTI MODE -->
+<div id="multiMode" class="hidden">
+<div class="card">
+<label>Electricity Rate (₱ per kWh)</label>
+<input type="number" id="rateMulti" value="13">
+
+<table>
+<thead>
+<tr>
+<th>W</th>
+<th>Qty</th>
+<th>Hrs</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="multiTable"></tbody>
+</table>
+
+<button class="outline" onclick="addRow()">+ Add Appliance</button>
+<button class="primary" onclick="calculateMulti()">Analyze Energy</button>
+
+<div id="multiResult" class="hidden">
+<h3>Total Monthly: <span id="multiMonthly"></span></h3>
+<h3>Total Yearly: <span id="multiYearly"></span></h3>
+</div>
+
+</div>
 </div>
 
 </div>
 
 <script>
 
-const hoursSlider=document.getElementById("hours");
-const hourDisplay=document.getElementById("hourDisplay");
+// TOGGLE
+const singleBtn=document.getElementById("singleBtn");
+const multiBtn=document.getElementById("multiBtn");
+const singleMode=document.getElementById("singleMode");
+const multiMode=document.getElementById("multiMode");
 
-hoursSlider.oninput=()=>{
-hourDisplay.innerText=hoursSlider.value;
+singleBtn.onclick=()=>{
+singleBtn.classList.add("active");
+multiBtn.classList.remove("active");
+singleMode.classList.remove("hidden");
+multiMode.classList.add("hidden");
 };
 
+multiBtn.onclick=()=>{
+multiBtn.classList.add("active");
+singleBtn.classList.remove("active");
+multiMode.classList.remove("hidden");
+singleMode.classList.add("hidden");
+};
+
+// SINGLE MODE LOGIC
+const hoursSlider=document.getElementById("hoursSingle");
+const hourDisplay=document.getElementById("hourDisplay");
+
+hoursSlider.oninput=()=>hourDisplay.innerText=hoursSlider.value;
+
 function changeHours(val){
-let current=parseInt(hoursSlider.value);
-let newVal=Math.min(24,Math.max(1,current+val));
+let newVal=Math.min(24,Math.max(1,parseInt(hoursSlider.value)+val));
 hoursSlider.value=newVal;
 hourDisplay.innerText=newVal;
 }
@@ -262,36 +341,67 @@ document.querySelectorAll(".day").forEach(d=>{
 d.onclick=()=>d.classList.toggle("active");
 });
 
-function calculate(){
-let rate=parseFloat(document.getElementById("rate").value)||0;
-let watts=parseFloat(document.getElementById("watts").value)||0;
+function calculateSingle(){
+let rate=parseFloat(document.getElementById("rateSingle").value)||0;
+let watts=parseFloat(document.getElementById("wattsSingle").value)||0;
 let hours=parseFloat(hoursSlider.value)||0;
-let weeks=parseFloat(document.querySelector("input[name=weeks]:checked").value)||4;
-
-let activeDays=document.querySelectorAll(".day.active").length;
+let weeks=parseFloat(document.querySelector("input[name=weeksSingle]:checked").value)||4;
+let days=document.querySelectorAll(".day.active").length;
 
 let perHour=(watts/1000)*rate;
 let perDay=perHour*hours;
-let perWeek=perDay*activeDays;
+let perWeek=perDay*days;
 let perMonth=perWeek*weeks;
 
-function format(n){
-return "₱"+n.toLocaleString("en-PH",{minimumFractionDigits:2});
+function f(n){return "₱"+n.toLocaleString("en-PH",{minimumFractionDigits:2});}
+
+document.getElementById("perHour").innerText=f(perHour);
+document.getElementById("perDay").innerText=f(perDay);
+document.getElementById("perWeek").innerText=f(perWeek);
+document.getElementById("perMonth").innerText=f(perMonth);
+
+document.getElementById("singleResult").classList.remove("hidden");
 }
 
-document.getElementById("perHour").innerText=format(perHour);
-document.getElementById("perDay").innerText=format(perDay);
-document.getElementById("perWeek").innerText=format(perWeek);
-document.getElementById("perMonth").innerText=format(perMonth);
-
-document.getElementById("resultSection").style.display="block";
-window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+function resetSingle(){
+document.getElementById("singleResult").classList.add("hidden");
+document.getElementById("wattsSingle").value="";
 }
 
-function resetApp(){
-document.getElementById("resultSection").style.display="none";
-document.getElementById("watts").value="";
+// MULTI MODE
+const multiTable=document.getElementById("multiTable");
+
+function addRow(){
+let tr=document.createElement("tr");
+tr.innerHTML=`
+<td><input type="number" placeholder="Watts"></td>
+<td><input type="number" value="1"></td>
+<td><input type="number" value="1"></td>
+<td><button onclick="this.closest('tr').remove()">X</button></td>
+`;
+multiTable.appendChild(tr);
 }
+
+function calculateMulti(){
+let rate=parseFloat(document.getElementById("rateMulti").value)||0;
+let total=0;
+
+multiTable.querySelectorAll("tr").forEach(row=>{
+let inputs=row.querySelectorAll("input");
+let watts=parseFloat(inputs[0].value)||0;
+let qty=parseFloat(inputs[1].value)||0;
+let hrs=parseFloat(inputs[2].value)||0;
+total+=((watts/1000)*hrs*30*qty*rate);
+});
+
+function f(n){return "₱"+n.toLocaleString("en-PH",{minimumFractionDigits:2});}
+
+document.getElementById("multiMonthly").innerText=f(total);
+document.getElementById("multiYearly").innerText=f(total*12);
+document.getElementById("multiResult").classList.remove("hidden");
+}
+
+addRow();
 
 </script>
 
