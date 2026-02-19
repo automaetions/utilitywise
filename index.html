@@ -4,103 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UtilityWise Energy Analyzer</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --ink: #0d1b2a;
+    --sea: #0f4c5c;
+    --mint: #d9f2e6;
+    --sun: #f2c14e;
+    --fog: #f5f7fa;
+    --cloud: #ffffff;
+    --accent: #1f7a8c;
+    --danger: #b42318;
+    --shadow: 0 18px 40px rgba(13, 27, 42, 0.2);
+}
+
 body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0B2A4A, #123B63);
+    font-family: 'Space Grotesk', sans-serif;
+    background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(242, 193, 78, 0.25), transparent 60%),
+        radial-gradient(1000px 700px at 90% 10%, rgba(31, 122, 140, 0.35), transparent 60%),
+        linear-gradient(135deg, #0d1b2a, #144d5d);
     margin: 0;
     color: #fff;
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
-    padding: 40px 20px;
+    padding: 48px 20px 70px;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.3rem, 4vw, 3.2rem);
+    letter-spacing: 0.5px;
 }
 
 .subtitle {
     text-align: center;
     opacity: 0.8;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card {
-    background: #fff;
-    color: #111;
-    border-radius: 14px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    background: var(--cloud);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 26px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(13, 27, 42, 0.08);
 }
 
 input, select {
     width: 100%;
-    padding: 10px;
-    margin-top: 6px;
+    padding: 11px 12px;
+    margin-top: 8px;
     margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    border-radius: 10px;
+    border: 1px solid rgba(13, 27, 42, 0.15);
+    font: inherit;
+    background: #fff;
 }
 
 input[type=range] {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    accent-color: var(--accent);
 }
 
 button {
-    background: #2EA3F2;
+    background: var(--accent);
     border: none;
-    padding: 14px;
-    border-radius: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
     color: white;
     font-weight: 600;
     cursor: pointer;
     width: 100%;
     margin-top: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
 }
 
 button.secondary {
-    background: #0B2A4A;
-    border: 1px solid #2EA3F2;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
 }
 
 .appliance-card {
-    border: 1px solid #eee;
+    border: 1px solid rgba(13, 27, 42, 0.12);
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 16px;
     margin-bottom: 20px;
+    background: linear-gradient(120deg, rgba(217, 242, 230, 0.6), rgba(255, 255, 255, 0.9));
 }
 
 .dashboard {
-    background: #fff;
-    color: #111;
-    border-radius: 14px;
-    padding: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    background: var(--cloud);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: var(--shadow);
 }
 
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
 }
 
 .metric {
-    background: #f4f7fb;
+    background: var(--fog);
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(13, 27, 42, 0.08);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 0.95rem;
 }
 
 th, td {
@@ -110,17 +140,52 @@ th, td {
 }
 
 th {
-    background: #2EA3F2;
+    background: var(--accent);
     color: white;
 }
 
 .highlight {
-    background: #fff3cd;
+    background: rgba(242, 193, 78, 0.25);
 }
 
 .remove-btn {
-    background: #C62828;
+    background: var(--danger);
     margin-top: 10px;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(15, 76, 92, 0.25);
+}
+
+.helper {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: -10px;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    margin-top: 22px;
+}
+
+@media (max-width: 720px) {
+    .card, .dashboard {
+        padding: 22px;
+    }
+    table {
+        font-size: 0.9rem;
+    }
 }
 </style>
 </head>
@@ -130,19 +195,23 @@ th {
 <div class="container">
 
 <h1>UtilityWise Energy Analyzer</h1>
-<p class="subtitle">Smart cost insights for modern homes</p>
+<p class="subtitle">Track appliance costs, see quick savings, and spot the biggest energy drains in a clear dashboard.</p>
 
 <div class="card">
-<label>Cost per kWh (₱)</label>
-<input type="number" id="rate" placeholder="Example: 13">
+<div class="section-title">Energy Rate</div>
+<label for="rate">Cost per kWh (₱)</label>
+<input type="number" id="rate" min="0" step="0.01" placeholder="Example: 13.20">
+<div class="helper">Use the rate from the latest utility bill.</div>
 
 <div id="applianceContainer"></div>
 
-<button class="secondary" onclick="addAppliance()">+ Add Appliance</button>
-<button onclick="calculate()">Analyze Energy Cost</button>
+<button class="secondary" type="button" onclick="addAppliance()">+ Add Appliance</button>
+<button type="button" onclick="calculate()">Analyze Energy Cost</button>
 </div>
 
-<div id="results"></div>
+<div id="results">
+    <div class="empty-state">Add appliances and run the analysis to see results.</div>
+</div>
 
 </div>
 
@@ -159,29 +228,49 @@ function addAppliance() {
     card.id = "applianceCard" + applianceCount;
 
     card.innerHTML = `
-        <label>Appliance Name</label>
+        <label for="name${applianceCount}">Appliance Name</label>
         <input type="text" id="name${applianceCount}" placeholder="e.g. Daikin 1.5HP">
 
-        <label>Wattage (W)</label>
-        <input type="number" id="watts${applianceCount}" placeholder="Enter watts">
+        <label for="watts${applianceCount}">Wattage (W)</label>
+        <input type="number" id="watts${applianceCount}" min="0" step="1" placeholder="Enter watts">
 
-        <label>Quantity</label>
-        <input type="number" id="qty${applianceCount}" value="1">
+        <label for="qty${applianceCount}">Quantity</label>
+        <input type="number" id="qty${applianceCount}" min="1" step="1" value="1">
 
-        <label>Hours / Day</label>
-        <input type="range" id="hours${applianceCount}" min="0" max="24" value="0"
-        oninput="document.getElementById('hval${applianceCount}').innerText=this.value">
+        <label for="hours${applianceCount}">Hours / Day</label>
+        <input type="range" id="hours${applianceCount}" min="0" max="24" step="0.5" value="0">
         <small><span id="hval${applianceCount}">0</span> hrs</small>
 
-        <label>Reduce Hours</label>
-        <input type="range" id="reduce${applianceCount}" min="0" max="10" value="0"
-        oninput="document.getElementById('rval${applianceCount}').innerText=this.value">
+        <label for="reduce${applianceCount}">Reduce Hours / Day</label>
+        <input type="range" id="reduce${applianceCount}" min="0" max="24" step="0.5" value="0">
         <small><span id="rval${applianceCount}">0</span> hrs</small>
 
-        <button class="remove-btn" onclick="removeAppliance(${applianceCount})">Remove</button>
+        <button class="remove-btn" type="button" onclick="removeAppliance(${applianceCount})">Remove</button>
     `;
 
     container.appendChild(card);
+
+    const hoursInput = card.querySelector(`#hours${applianceCount}`);
+    const reduceInput = card.querySelector(`#reduce${applianceCount}`);
+    const hoursLabel = card.querySelector(`#hval${applianceCount}`);
+    const reduceLabel = card.querySelector(`#rval${applianceCount}`);
+
+    hoursInput.addEventListener("input", () => {
+        hoursLabel.textContent = hoursInput.value;
+        reduceInput.max = hoursInput.value;
+        if (parseFloat(reduceInput.value) > parseFloat(hoursInput.value)) {
+            reduceInput.value = hoursInput.value;
+            reduceLabel.textContent = reduceInput.value;
+        }
+    });
+
+    reduceInput.addEventListener("input", () => {
+        reduceLabel.textContent = reduceInput.value;
+    });
+
+    hoursLabel.textContent = hoursInput.value;
+    reduceLabel.textContent = reduceInput.value;
+    reduceInput.max = hoursInput.value;
 }
 
 function removeAppliance(id) {
@@ -204,6 +293,7 @@ function calculate() {
     let appliances = [];
     let totalYearly = 0;
     let totalReduced = 0;
+    let totalKwhYearly = 0;
 
     for (let i = 1; i <= applianceCount; i++) {
 
@@ -217,13 +307,16 @@ function calculate() {
 
         if (name && watts > 0 && hours > 0) {
 
-            let yearly = qty * (watts / 1000) * hours * 365 * rate;
+            let yearlyKwh = qty * (watts / 1000) * hours * 365;
+            let yearly = yearlyKwh * rate;
             let newHours = Math.max(hours - reduce, 0);
-            let reduced = qty * (watts / 1000) * newHours * 365 * rate;
+            let reducedKwh = qty * (watts / 1000) * newHours * 365;
+            let reduced = reducedKwh * rate;
             let savings = yearly - reduced;
 
             totalYearly += yearly;
             totalReduced += reduced;
+            totalKwhYearly += yearlyKwh;
 
             appliances.push({ name, yearly, reduced, savings });
         }
@@ -245,6 +338,7 @@ function calculate() {
             <div class="metric"><small>Yearly Cost</small><strong>${formatMoney(totalYearly)}</strong></div>
             <div class="metric"><small>New Yearly Cost</small><strong>${formatMoney(totalReduced)}</strong></div>
             <div class="metric"><small>Total Savings</small><strong>${formatMoney(totalYearly - totalReduced)}</strong></div>
+            <div class="metric"><small>Yearly kWh</small><strong>${totalKwhYearly.toLocaleString("en-PH", { maximumFractionDigits: 1 })}</strong></div>
         </div>
 
         <table>
