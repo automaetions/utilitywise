@@ -24,10 +24,13 @@ h1 {
     margin: auto;
 }
 
-select, input {
+select, input[type=number] {
     width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+    padding: 6px;
+}
+
+input[type=range] {
+    width: 100%;
 }
 
 table {
@@ -87,11 +90,12 @@ button {
 <th>Appliance</th>
 <th>Qty</th>
 <th>Hours per Day</th>
+<th>Reduce Hours By</th>
 </tr>
 
 <tr>
 <td>
-<select id="appliance1" onchange="setWatts(1)">
+<select id="appliance1">
 <option value="">Select Appliance</option>
 <option value="1000">Air Conditioner (1000W)</option>
 <option value="150">Refrigerator (150W)</option>
@@ -103,12 +107,21 @@ button {
 </select>
 </td>
 <td><input type="number" id="qty1" value="1"></td>
-<td><input type="number" id="hours1"></td>
+<td>
+<input type="range" id="hours1" min="0" max="24" value="0" 
+oninput="document.getElementById('hval1').innerText=this.value">
+<span id="hval1">0</span> hrs
+</td>
+<td>
+<input type="range" id="reduce1" min="0" max="10" value="0" 
+oninput="document.getElementById('rval1').innerText=this.value">
+<span id="rval1">0</span> hrs
+</td>
 </tr>
 
 <tr>
 <td>
-<select id="appliance2" onchange="setWatts(2)">
+<select id="appliance2">
 <option value="">Select Appliance</option>
 <option value="1000">Air Conditioner (1000W)</option>
 <option value="150">Refrigerator (150W)</option>
@@ -120,12 +133,21 @@ button {
 </select>
 </td>
 <td><input type="number" id="qty2" value="1"></td>
-<td><input type="number" id="hours2"></td>
+<td>
+<input type="range" id="hours2" min="0" max="24" value="0" 
+oninput="document.getElementById('hval2').innerText=this.value">
+<span id="hval2">0</span> hrs
+</td>
+<td>
+<input type="range" id="reduce2" min="0" max="10" value="0" 
+oninput="document.getElementById('rval2').innerText=this.value">
+<span id="rval2">0</span> hrs
+</td>
 </tr>
 
 <tr>
 <td>
-<select id="appliance3" onchange="setWatts(3)">
+<select id="appliance3">
 <option value="">Select Appliance</option>
 <option value="1000">Air Conditioner (1000W)</option>
 <option value="150">Refrigerator (150W)</option>
@@ -137,12 +159,21 @@ button {
 </select>
 </td>
 <td><input type="number" id="qty3" value="1"></td>
-<td><input type="number" id="hours3"></td>
+<td>
+<input type="range" id="hours3" min="0" max="24" value="0" 
+oninput="document.getElementById('hval3').innerText=this.value">
+<span id="hval3">0</span> hrs
+</td>
+<td>
+<input type="range" id="reduce3" min="0" max="10" value="0" 
+oninput="document.getElementById('rval3').innerText=this.value">
+<span id="rval3">0</span> hrs
+</td>
 </tr>
 
 <tr>
 <td>
-<select id="appliance4" onchange="setWatts(4)">
+<select id="appliance4">
 <option value="">Select Appliance</option>
 <option value="1000">Air Conditioner (1000W)</option>
 <option value="150">Refrigerator (150W)</option>
@@ -154,12 +185,21 @@ button {
 </select>
 </td>
 <td><input type="number" id="qty4" value="1"></td>
-<td><input type="number" id="hours4"></td>
+<td>
+<input type="range" id="hours4" min="0" max="24" value="0" 
+oninput="document.getElementById('hval4').innerText=this.value">
+<span id="hval4">0</span> hrs
+</td>
+<td>
+<input type="range" id="reduce4" min="0" max="10" value="0" 
+oninput="document.getElementById('rval4').innerText=this.value">
+<span id="rval4">0</span> hrs
+</td>
 </tr>
 
 <tr>
 <td>
-<select id="appliance5" onchange="setWatts(5)">
+<select id="appliance5">
 <option value="">Select Appliance</option>
 <option value="1000">Air Conditioner (1000W)</option>
 <option value="150">Refrigerator (150W)</option>
@@ -171,7 +211,16 @@ button {
 </select>
 </td>
 <td><input type="number" id="qty5" value="1"></td>
-<td><input type="number" id="hours5"></td>
+<td>
+<input type="range" id="hours5" min="0" max="24" value="0" 
+oninput="document.getElementById('hval5').innerText=this.value">
+<span id="hval5">0</span> hrs
+</td>
+<td>
+<input type="range" id="reduce5" min="0" max="10" value="0" 
+oninput="document.getElementById('rval5').innerText=this.value">
+<span id="rval5">0</span> hrs
+</td>
 </tr>
 
 </table>
@@ -192,8 +241,8 @@ function formatMoney(value) {
 }
 
 function calculate() {
-    let rate = parseFloat(document.getElementById("rate").value);
 
+    let rate = parseFloat(document.getElementById("rate").value);
     if (!rate || rate <= 0) {
         alert("Please enter valid Cost per kWh.");
         return;
@@ -201,21 +250,26 @@ function calculate() {
 
     let appliances = [];
     let totalYearly = 0;
+    let totalReducedYearly = 0;
 
     for (let i = 1; i <= 5; i++) {
+
         let select = document.getElementById("appliance" + i);
         let name = select.options[select.selectedIndex].text;
         let watts = parseFloat(select.value) || 0;
         let qty = parseFloat(document.getElementById("qty" + i).value) || 1;
         let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
+        let reduce = parseFloat(document.getElementById("reduce" + i).value) || 0;
 
         if (watts > 0 && hours > 0) {
+
             let yearlyCost = qty * (watts / 1000) * hours * 365 * rate;
-            let reducedHours = Math.max(hours - 2, 0);
-            let reducedYearly = qty * (watts / 1000) * reducedHours * 365 * rate;
+            let newHours = Math.max(hours - reduce, 0);
+            let reducedYearly = qty * (watts / 1000) * newHours * 365 * rate;
             let savings = yearlyCost - reducedYearly;
 
             totalYearly += yearlyCost;
+            totalReducedYearly += reducedYearly;
 
             appliances.push({
                 name,
@@ -234,7 +288,6 @@ function calculate() {
     appliances.sort((a, b) => b.yearlyCost - a.yearlyCost);
 
     let totalMonthly = totalYearly / 12;
-    let totalReducedYearly = appliances.reduce((sum, a) => sum + a.reducedYearly, 0);
     let totalSavings = totalYearly - totalReducedYearly;
 
     let output = `
@@ -242,7 +295,7 @@ function calculate() {
         <h2>Energy Cost Dashboard</h2>
         <p><strong>Total Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
         <p><strong>Total Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
-        <p><strong>New Yearly Cost (−2 Hours Scenario):</strong> ${formatMoney(totalReducedYearly)}</p>
+        <p><strong>New Yearly Cost After Reductions:</strong> ${formatMoney(totalReducedYearly)}</p>
         <p><strong>Total Potential Yearly Savings:</strong> ${formatMoney(totalSavings)}</p>
 
         <h3>Appliance Ranking</h3>
@@ -251,7 +304,7 @@ function calculate() {
         <th>Rank</th>
         <th>Appliance</th>
         <th>Yearly</th>
-        <th>Yearly (−2h)</th>
+        <th>Yearly After Reduction</th>
         <th>Savings</th>
         </tr>
     `;
