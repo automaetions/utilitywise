@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UtilityWise Advanced Energy Analyzer</title>
+<title>UtilityWise Smart Energy Analyzer</title>
 
 <style>
 body {
@@ -24,7 +24,7 @@ h1 {
     margin: auto;
 }
 
-input {
+select, input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
@@ -77,7 +77,7 @@ button {
 
 <div class="container">
 
-<h1>UtilityWise Advanced Energy Analyzer</h1>
+<h1>UtilityWise Smart Energy Analyzer</h1>
 
 <label>Cost per kWh (₱):</label>
 <input type="number" id="rate" placeholder="Example: 13">
@@ -86,46 +86,93 @@ button {
 <tr>
 <th>Appliance</th>
 <th>Qty</th>
-<th>Watts</th>
 <th>Hours per Day</th>
 </tr>
 
-
 <tr>
-<td><input type="text" id="name1"></td>
+<td>
+<select id="appliance1" onchange="setWatts(1)">
+<option value="">Select Appliance</option>
+<option value="1000">Air Conditioner (1000W)</option>
+<option value="150">Refrigerator (150W)</option>
+<option value="75">Electric Fan (75W)</option>
+<option value="120">LED TV (120W)</option>
+<option value="1000">Rice Cooker (1000W)</option>
+<option value="2000">Electric Shower (2000W)</option>
+<option value="1500">Washing Machine (1500W)</option>
+</select>
+</td>
 <td><input type="number" id="qty1" value="1"></td>
-<td><input type="number" id="watts1"></td>
 <td><input type="number" id="hours1"></td>
 </tr>
 
 <tr>
-<td><input type="text" id="name2"></td>
+<td>
+<select id="appliance2" onchange="setWatts(2)">
+<option value="">Select Appliance</option>
+<option value="1000">Air Conditioner (1000W)</option>
+<option value="150">Refrigerator (150W)</option>
+<option value="75">Electric Fan (75W)</option>
+<option value="120">LED TV (120W)</option>
+<option value="1000">Rice Cooker (1000W)</option>
+<option value="2000">Electric Shower (2000W)</option>
+<option value="1500">Washing Machine (1500W)</option>
+</select>
+</td>
 <td><input type="number" id="qty2" value="1"></td>
-<td><input type="number" id="watts2"></td>
 <td><input type="number" id="hours2"></td>
 </tr>
 
 <tr>
-<td><input type="text" id="name3"></td>
+<td>
+<select id="appliance3" onchange="setWatts(3)">
+<option value="">Select Appliance</option>
+<option value="1000">Air Conditioner (1000W)</option>
+<option value="150">Refrigerator (150W)</option>
+<option value="75">Electric Fan (75W)</option>
+<option value="120">LED TV (120W)</option>
+<option value="1000">Rice Cooker (1000W)</option>
+<option value="2000">Electric Shower (2000W)</option>
+<option value="1500">Washing Machine (1500W)</option>
+</select>
+</td>
 <td><input type="number" id="qty3" value="1"></td>
-<td><input type="number" id="watts3"></td>
 <td><input type="number" id="hours3"></td>
 </tr>
 
 <tr>
-<td><input type="text" id="name4"></td>
+<td>
+<select id="appliance4" onchange="setWatts(4)">
+<option value="">Select Appliance</option>
+<option value="1000">Air Conditioner (1000W)</option>
+<option value="150">Refrigerator (150W)</option>
+<option value="75">Electric Fan (75W)</option>
+<option value="120">LED TV (120W)</option>
+<option value="1000">Rice Cooker (1000W)</option>
+<option value="2000">Electric Shower (2000W)</option>
+<option value="1500">Washing Machine (1500W)</option>
+</select>
+</td>
 <td><input type="number" id="qty4" value="1"></td>
-<td><input type="number" id="watts4"></td>
 <td><input type="number" id="hours4"></td>
 </tr>
 
 <tr>
-<td><input type="text" id="name5"></td>
+<td>
+<select id="appliance5" onchange="setWatts(5)">
+<option value="">Select Appliance</option>
+<option value="1000">Air Conditioner (1000W)</option>
+<option value="150">Refrigerator (150W)</option>
+<option value="75">Electric Fan (75W)</option>
+<option value="120">LED TV (120W)</option>
+<option value="1000">Rice Cooker (1000W)</option>
+<option value="2000">Electric Shower (2000W)</option>
+<option value="1500">Washing Machine (1500W)</option>
+</select>
+</td>
 <td><input type="number" id="qty5" value="1"></td>
-<td><input type="number" id="watts5"></td>
 <td><input type="number" id="hours5"></td>
 </tr>
-
 
 </table>
 
@@ -136,6 +183,7 @@ button {
 </div>
 
 <script>
+
 function formatMoney(value) {
     return "₱" + value.toLocaleString("en-PH", {
         minimumFractionDigits: 2,
@@ -153,30 +201,25 @@ function calculate() {
 
     let appliances = [];
     let totalYearly = 0;
-    let totalReducedYearly = 0;
 
     for (let i = 1; i <= 5; i++) {
-        let name = document.getElementById("name" + i).value;
+        let select = document.getElementById("appliance" + i);
+        let name = select.options[select.selectedIndex].text;
+        let watts = parseFloat(select.value) || 0;
         let qty = parseFloat(document.getElementById("qty" + i).value) || 1;
-        let watts = parseFloat(document.getElementById("watts" + i).value) || 0;
         let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
 
-        if (name && watts > 0 && hours > 0) {
-
+        if (watts > 0 && hours > 0) {
             let yearlyCost = qty * (watts / 1000) * hours * 365 * rate;
-            let monthlyCost = yearlyCost / 12;
-
             let reducedHours = Math.max(hours - 2, 0);
             let reducedYearly = qty * (watts / 1000) * reducedHours * 365 * rate;
             let savings = yearlyCost - reducedYearly;
 
             totalYearly += yearlyCost;
-            totalReducedYearly += reducedYearly;
 
             appliances.push({
                 name,
                 yearlyCost,
-                monthlyCost,
                 reducedYearly,
                 savings
             });
@@ -184,13 +227,14 @@ function calculate() {
     }
 
     if (appliances.length === 0) {
-        alert("Please enter at least one appliance.");
+        alert("Please select at least one appliance.");
         return;
     }
 
     appliances.sort((a, b) => b.yearlyCost - a.yearlyCost);
 
     let totalMonthly = totalYearly / 12;
+    let totalReducedYearly = appliances.reduce((sum, a) => sum + a.reducedYearly, 0);
     let totalSavings = totalYearly - totalReducedYearly;
 
     let output = `
@@ -198,8 +242,7 @@ function calculate() {
         <h2>Energy Cost Dashboard</h2>
         <p><strong>Total Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
         <p><strong>Total Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
-        <p><strong>Scenario: Reduce 2 Hours Daily</strong></p>
-        <p><strong>New Yearly Cost:</strong> ${formatMoney(totalReducedYearly)}</p>
+        <p><strong>New Yearly Cost (−2 Hours Scenario):</strong> ${formatMoney(totalReducedYearly)}</p>
         <p><strong>Total Potential Yearly Savings:</strong> ${formatMoney(totalSavings)}</p>
 
         <h3>Appliance Ranking</h3>
@@ -209,7 +252,7 @@ function calculate() {
         <th>Appliance</th>
         <th>Yearly</th>
         <th>Yearly (−2h)</th>
-        <th>Yearly Savings</th>
+        <th>Savings</th>
         </tr>
     `;
 
@@ -226,11 +269,12 @@ function calculate() {
     });
 
     output += `</table>
-    <p><strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.</p>
+    <p><strong>Top Energy Drain:</strong> ${appliances[0].name}</p>
     </div>`;
 
     document.getElementById("results").innerHTML = output;
 }
+
 </script>
 
 </body>
