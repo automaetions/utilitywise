@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UtilityWise PRO Energy Analyzer</title>
+<title>UtilityWise Advanced Energy Analyzer</title>
 
 <style>
 body {
@@ -70,12 +70,6 @@ button {
 .highlight {
     background-color: #ffe082;
 }
-
-.pro-box {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #e3f2fd;
-}
 </style>
 </head>
 
@@ -83,7 +77,7 @@ button {
 
 <div class="container">
 
-<h1>UtilityWise PRO Home Energy Analyzer</h1>
+<h1>UtilityWise Advanced Energy Analyzer</h1>
 
 <label>Cost per kWh (₱):</label>
 <input type="number" id="rate" placeholder="Example: 13">
@@ -91,6 +85,7 @@ button {
 <table>
 <tr>
 <th>Appliance</th>
+<th>Qty</th>
 <th>Watts</th>
 <th>Hours per Day</th>
 </tr>
@@ -98,30 +93,35 @@ button {
 
 <tr>
 <td><input type="text" id="name1"></td>
+<td><input type="number" id="qty1" value="1"></td>
 <td><input type="number" id="watts1"></td>
 <td><input type="number" id="hours1"></td>
 </tr>
 
 <tr>
 <td><input type="text" id="name2"></td>
+<td><input type="number" id="qty2" value="1"></td>
 <td><input type="number" id="watts2"></td>
 <td><input type="number" id="hours2"></td>
 </tr>
 
 <tr>
 <td><input type="text" id="name3"></td>
+<td><input type="number" id="qty3" value="1"></td>
 <td><input type="number" id="watts3"></td>
 <td><input type="number" id="hours3"></td>
 </tr>
 
 <tr>
 <td><input type="text" id="name4"></td>
+<td><input type="number" id="qty4" value="1"></td>
 <td><input type="number" id="watts4"></td>
 <td><input type="number" id="hours4"></td>
 </tr>
 
 <tr>
 <td><input type="text" id="name5"></td>
+<td><input type="number" id="qty5" value="1"></td>
 <td><input type="number" id="watts5"></td>
 <td><input type="number" id="hours5"></td>
 </tr>
@@ -153,19 +153,25 @@ function calculate() {
 
     let appliances = [];
     let totalYearly = 0;
+    let totalReducedYearly = 0;
 
     for (let i = 1; i <= 5; i++) {
         let name = document.getElementById("name" + i).value;
+        let qty = parseFloat(document.getElementById("qty" + i).value) || 1;
         let watts = parseFloat(document.getElementById("watts" + i).value) || 0;
         let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
 
         if (name && watts > 0 && hours > 0) {
-            let yearlyCost = (watts / 1000) * hours * 365 * rate;
+
+            let yearlyCost = qty * (watts / 1000) * hours * 365 * rate;
             let monthlyCost = yearlyCost / 12;
-            let reducedYearly = yearlyCost * 0.8;
-            let savings = yearlyCost * 0.2;
+
+            let reducedHours = Math.max(hours - 2, 0);
+            let reducedYearly = qty * (watts / 1000) * reducedHours * 365 * rate;
+            let savings = yearlyCost - reducedYearly;
 
             totalYearly += yearlyCost;
+            totalReducedYearly += reducedYearly;
 
             appliances.push({
                 name,
@@ -185,23 +191,24 @@ function calculate() {
     appliances.sort((a, b) => b.yearlyCost - a.yearlyCost);
 
     let totalMonthly = totalYearly / 12;
-    let totalSavings = totalYearly * 0.2;
+    let totalSavings = totalYearly - totalReducedYearly;
 
     let output = `
     <div class="dashboard">
         <h2>Energy Cost Dashboard</h2>
         <p><strong>Total Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
         <p><strong>Total Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
-        <p><strong>Potential Yearly Savings (20% Reduction):</strong> ${formatMoney(totalSavings)}</p>
+        <p><strong>Scenario: Reduce 2 Hours Daily</strong></p>
+        <p><strong>New Yearly Cost:</strong> ${formatMoney(totalReducedYearly)}</p>
+        <p><strong>Total Potential Yearly Savings:</strong> ${formatMoney(totalSavings)}</p>
 
         <h3>Appliance Ranking</h3>
         <table>
         <tr>
         <th>Rank</th>
         <th>Appliance</th>
-        <th>Monthly</th>
         <th>Yearly</th>
-        <th>20% Reduced Yearly</th>
+        <th>Yearly (−2h)</th>
         <th>Yearly Savings</th>
         </tr>
     `;
@@ -212,7 +219,6 @@ function calculate() {
         <tr ${highlight}>
             <td>${index + 1}</td>
             <td>${item.name}</td>
-            <td>${formatMoney(item.monthlyCost)}</td>
             <td>${formatMoney(item.yearlyCost)}</td>
             <td>${formatMoney(item.reducedYearly)}</td>
             <td>${formatMoney(item.savings)}</td>
@@ -220,11 +226,7 @@ function calculate() {
     });
 
     output += `</table>
-
-    <div class="pro-box">
-    <strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.
-    </div>
-
+    <p><strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.</p>
     </div>`;
 
     document.getElementById("results").innerHTML = output;
