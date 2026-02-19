@@ -7,120 +7,146 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root {
+  --green: #4CD137;
+  --green-hover: #2ECC71;
+  --red: #E53935;
+  --amber: #FFB300;
+  --navy1: #0B1F3A;
+  --navy2: #123B63;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0B2A4A, #123B63);
-    margin: 0;
-    color: #fff;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, var(--navy1), var(--navy2));
+  color: #111;
 }
 
 .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 40px 20px;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    text-align: center;
-    opacity: 0.8;
-    margin-bottom: 30px;
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
 }
 
 .card {
-    background: #fff;
-    color: #111;
-    border-radius: 14px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+label {
+  font-weight: 600;
+  font-size: 14px;
 }
 
 input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-input[type=range] {
-    margin-bottom: 5px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 button {
-    background: #2EA3F2;
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
 }
 
-button.secondary {
-    background: #0B2A4A;
-    border: 1px solid #2EA3F2;
+.primary-btn {
+  background: linear-gradient(135deg, var(--green), var(--green-hover));
+  color: white;
+  width: 100%;
+  padding: 12px;
+  font-weight: 600;
 }
 
-.appliance-card {
-    border: 1px solid #eee;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-.dashboard {
-    background: #fff;
-    color: #111;
-    border-radius: 14px;
-    padding: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-}
-
-.metric-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.metric {
-    background: #f4f7fb;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background: #2EA3F2;
-    color: white;
-}
-
-.highlight {
-    background: #fff3cd;
+.add-btn {
+  background: transparent;
+  border: 2px solid var(--green);
+  color: var(--green);
+  width: 100%;
+  margin-top: 10px;
 }
 
 .remove-btn {
-    background: #C62828;
-    margin-top: 10px;
+  background: var(--red);
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+th {
+  background: #f5f5f5;
+}
+
+.dashboard .metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.metric {
+  background: #f4f7fb;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.metric strong {
+  display: block;
+  font-size: 16px;
+}
+
+.green { color: var(--green); font-weight: 600; }
+.amber { background: #fff3cd; }
+.sticky-summary {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  border-top: 2px solid var(--green);
+  font-size: 14px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
 }
 </style>
 </head>
@@ -130,154 +156,151 @@ th {
 <div class="container">
 
 <h1>UtilityWise Energy Analyzer</h1>
-<p class="subtitle">Smart cost insights for modern homes</p>
 
 <div class="card">
-<label>Cost per kWh (₱)</label>
+<label>Electricity Rate (₱ per kWh)</label>
 <input type="number" id="rate" placeholder="Example: 13">
 
-<div id="applianceContainer"></div>
+<label>Search Appliance</label>
+<input type="text" id="search" placeholder="Type appliance name...">
+<div id="suggestions"></div>
 
-<button class="secondary" onclick="addAppliance()">+ Add Appliance</button>
-<button onclick="calculate()">Analyze Energy Cost</button>
+<table id="applianceTable">
+<thead>
+<tr>
+<th>Appliance</th>
+<th>Watt</th>
+<th>Qty</th>
+<th>Hrs</th>
+<th>Days</th>
+<th>Weeks</th>
+<th>Reduce</th>
+<th></th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<button class="add-btn" onclick="addRow()">+ Add Appliance</button>
+<button class="primary-btn" onclick="openModal()">View Full Energy Report</button>
+
 </div>
 
-<div id="results"></div>
+<div id="dashboard" class="card dashboard" style="display:none;"></div>
 
+</div>
+
+<div class="sticky-summary" id="summaryBar">
+<span>Monthly: ₱0</span>
+<span>Yearly: ₱0</span>
+<span class="green">Savings: ₱0</span>
+</div>
+
+<div class="modal" id="leadModal">
+<div class="modal-content">
+<h3>Get Your Full Energy Report</h3>
+<input type="text" id="leadName" placeholder="Your Name">
+<input type="email" id="leadEmail" placeholder="Your Email">
+<input type="text" id="leadPhone" placeholder="Phone (optional)">
+<button class="primary-btn" onclick="submitLead()">Get Report</button>
+</div>
 </div>
 
 <script>
 
-let applianceCount = 0;
+const appliancesDB = [
+  {name:"Air Conditioner 1HP", watts:900},
+  {name:"Air Conditioner 1.5HP", watts:1200},
+  {name:"Refrigerator Small", watts:150},
+  {name:"Refrigerator Large", watts:300},
+  {name:"Electric Fan", watts:75},
+  {name:"LED TV", watts:120},
+  {name:"Rice Cooker", watts:1000},
+  {name:"Washing Machine", watts:500},
+  {name:"Microwave", watts:1100},
+  {name:"Electric Kettle", watts:1500}
+];
 
-function addAppliance() {
-    applianceCount++;
-    const container = document.getElementById("applianceContainer");
+const tbody = document.querySelector("#applianceTable tbody");
 
-    const card = document.createElement("div");
-    card.className = "appliance-card";
-    card.id = "applianceCard" + applianceCount;
-
-    card.innerHTML = `
-        <label>Appliance Name</label>
-        <input type="text" id="name${applianceCount}" placeholder="e.g. Daikin 1.5HP">
-
-        <label>Wattage (W)</label>
-        <input type="number" id="watts${applianceCount}" placeholder="Enter watts">
-
-        <label>Quantity</label>
-        <input type="number" id="qty${applianceCount}" value="1">
-
-        <label>Hours / Day</label>
-        <input type="range" id="hours${applianceCount}" min="0" max="24" value="0"
-        oninput="document.getElementById('hval${applianceCount}').innerText=this.value">
-        <small><span id="hval${applianceCount}">0</span> hrs</small>
-
-        <label>Reduce Hours</label>
-        <input type="range" id="reduce${applianceCount}" min="0" max="10" value="0"
-        oninput="document.getElementById('rval${applianceCount}').innerText=this.value">
-        <small><span id="rval${applianceCount}">0</span> hrs</small>
-
-        <button class="remove-btn" onclick="removeAppliance(${applianceCount})">Remove</button>
-    `;
-
-    container.appendChild(card);
+function addRow(name="", watts="") {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input value="${name}"></td>
+    <td><input type="number" value="${watts}"></td>
+    <td><input type="number" value="1"></td>
+    <td><input type="number" value="1"></td>
+    <td><input type="number" value="7"></td>
+    <td><input type="number" value="4"></td>
+    <td><input type="number" value="0"></td>
+    <td><button class="remove-btn" onclick="this.closest('tr').remove(); calculate()">X</button></td>
+  `;
+  tbody.appendChild(row);
+  calculate();
 }
 
-function removeAppliance(id) {
-    const card = document.getElementById("applianceCard" + id);
-    if (card) card.remove();
-}
-
-function formatMoney(value) {
-    return "₱" + value.toLocaleString("en-PH", { minimumFractionDigits: 2 });
-}
+addRow();
 
 function calculate() {
+  let rate = parseFloat(document.getElementById("rate").value) || 0;
+  let rows = tbody.querySelectorAll("tr");
 
-    let rate = parseFloat(document.getElementById("rate").value);
-    if (!rate || rate <= 0) {
-        alert("Enter valid cost per kWh.");
-        return;
-    }
+  let totalMonthly=0;
+  let totalReduced=0;
+  let appliances=[];
 
-    let appliances = [];
-    let totalYearly = 0;
-    let totalReduced = 0;
+  rows.forEach(row=>{
+    let inputs=row.querySelectorAll("input");
+    let name=inputs[0].value;
+    let watts=parseFloat(inputs[1].value)||0;
+    let qty=parseFloat(inputs[2].value)||0;
+    let hrs=parseFloat(inputs[3].value)||0;
+    let days=parseFloat(inputs[4].value)||0;
+    let weeks=parseFloat(inputs[5].value)||0;
+    let reduce=parseFloat(inputs[6].value)||0;
 
-    for (let i = 1; i <= applianceCount; i++) {
+    let monthlyKwh=(watts/1000)*hrs*days*weeks*qty;
+    let monthlyCost=monthlyKwh*rate;
+    let newMonthlyKwh=(watts/1000)*Math.max(hrs-reduce,0)*days*weeks*qty;
+    let newMonthlyCost=newMonthlyKwh*rate;
 
-        if (!document.getElementById("name" + i)) continue;
+    totalMonthly+=monthlyCost;
+    totalReduced+=newMonthlyCost;
 
-        let name = document.getElementById("name" + i).value;
-        let watts = parseFloat(document.getElementById("watts" + i).value) || 0;
-        let qty = parseFloat(document.getElementById("qty" + i).value) || 1;
-        let hours = parseFloat(document.getElementById("hours" + i).value) || 0;
-        let reduce = parseFloat(document.getElementById("reduce" + i).value) || 0;
+    appliances.push({name, monthlyCost});
+  });
 
-        if (name && watts > 0 && hours > 0) {
+  let yearly=totalMonthly*12;
+  let newYearly=totalReduced*12;
+  let savings=yearly-newYearly;
 
-            let yearly = qty * (watts / 1000) * hours * 365 * rate;
-            let newHours = Math.max(hours - reduce, 0);
-            let reduced = qty * (watts / 1000) * newHours * 365 * rate;
-            let savings = yearly - reduced;
-
-            totalYearly += yearly;
-            totalReduced += reduced;
-
-            appliances.push({ name, yearly, reduced, savings });
-        }
-    }
-
-    if (appliances.length === 0) {
-        alert("Add at least one valid appliance.");
-        return;
-    }
-
-    appliances.sort((a, b) => b.yearly - a.yearly);
-
-    let output = `
-    <div class="dashboard">
-        <h2>Energy Dashboard</h2>
-
-        <div class="metric-grid">
-            <div class="metric"><small>Monthly Cost</small><strong>${formatMoney(totalYearly / 12)}</strong></div>
-            <div class="metric"><small>Yearly Cost</small><strong>${formatMoney(totalYearly)}</strong></div>
-            <div class="metric"><small>New Yearly Cost</small><strong>${formatMoney(totalReduced)}</strong></div>
-            <div class="metric"><small>Total Savings</small><strong>${formatMoney(totalYearly - totalReduced)}</strong></div>
-        </div>
-
-        <table>
-            <tr>
-                <th>Rank</th>
-                <th>Appliance</th>
-                <th>Yearly</th>
-                <th>After Reduction</th>
-                <th>Savings</th>
-            </tr>
-    `;
-
-    appliances.forEach((a, i) => {
-        let highlight = i === 0 ? "class='highlight'" : "";
-        output += `
-        <tr ${highlight}>
-            <td>${i + 1}</td>
-            <td>${a.name}</td>
-            <td>${formatMoney(a.yearly)}</td>
-            <td>${formatMoney(a.reduced)}</td>
-            <td>${formatMoney(a.savings)}</td>
-        </tr>`;
-    });
-
-    output += "</table></div>";
-
-    document.getElementById("results").innerHTML = output;
+  document.getElementById("summaryBar").innerHTML=
+    `<span>Monthly: ₱${totalMonthly.toFixed(2)}</span>
+     <span>Yearly: ₱${yearly.toFixed(2)}</span>
+     <span class="green">Savings: ₱${savings.toFixed(2)}</span>`;
 }
 
-// Add first appliance by default
-addAppliance();
+tbody.addEventListener("input", calculate);
+document.getElementById("rate").addEventListener("input", calculate);
+
+function openModal(){
+  document.getElementById("leadModal").style.display="flex";
+}
+
+function submitLead(){
+  document.getElementById("leadModal").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  sendToGHL();
+}
+
+function sendToGHL(){
+  fetch("YOUR_GHL_WEBHOOK_URL",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({source:"UtilityWise"})
+  });
+}
 
 </script>
-
 </body>
 </html>
