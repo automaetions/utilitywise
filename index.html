@@ -1,172 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UtilityWise Energy Analyzer</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --green:#4CD137;
-  --green-hover:#2ECC71;
-  --red:#E53935;
-  --amber:#FFB300;
-  --navy1:#0B1F3A;
-  --navy2:#123B63;
+:root{
+--green:#4CD137;
+--red:#E53935;
+--navy1:#0B1F3A;
+--navy2:#123B63;
+--bg:#f4f7fb;
 }
 
 *{box-sizing:border-box;}
 
 body{
-  margin:0;
-  font-family:'Inter',sans-serif;
-  background:linear-gradient(135deg,var(--navy1),var(--navy2));
+margin:0;
+font-family:'Inter',sans-serif;
+background:linear-gradient(135deg,var(--navy1),var(--navy2));
 }
 
 h1{
-  text-align:center;
-  color:white;
-  margin:20px 0;
+text-align:center;
+color:white;
+padding:20px 10px 0;
 }
 
 .container{
-  max-width:1100px;
-  margin:auto;
-  padding:15px;
+max-width:1100px;
+margin:auto;
+padding:15px;
 }
 
 .card{
-  background:white;
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:20px;
+background:white;
+border-radius:14px;
+padding:18px;
+margin-bottom:20px;
 }
 
 label{
-  font-size:13px;
-  font-weight:600;
+font-size:13px;
+font-weight:600;
 }
 
 input{
-  width:100%;
-  padding:8px;
-  margin-top:6px;
-  margin-bottom:12px;
-  border-radius:8px;
-  border:1px solid #ddd;
+width:100%;
+padding:8px;
+border-radius:8px;
+border:1px solid #ddd;
+margin-top:6px;
 }
 
 button{
-  cursor:pointer;
-  border-radius:8px;
-  border:none;
-  padding:8px 12px;
-  font-weight:600;
+border:none;
+border-radius:8px;
+padding:10px;
+cursor:pointer;
+font-weight:600;
 }
 
-.primary-btn{
-  background:linear-gradient(135deg,var(--green),var(--green-hover));
-  color:white;
-  width:100%;
-  padding:12px;
+.primary{
+background:var(--green);
+color:white;
+width:100%;
+margin-top:10px;
 }
 
 .add-btn{
-  border:2px solid var(--green);
-  background:transparent;
-  color:var(--green);
-  width:100%;
-  margin-top:10px;
+border:2px solid var(--green);
+background:white;
+color:var(--green);
+width:100%;
+margin-top:10px;
 }
 
 .remove-btn{
-  background:var(--red);
-  color:white;
+background:var(--red);
+color:white;
+padding:6px 8px;
 }
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+margin-top:10px;
 }
 
 th,td{
-  padding:8px;
-  text-align:center;
-  border-bottom:1px solid #eee;
+padding:6px;
+text-align:center;
+border-bottom:1px solid #eee;
 }
 
 th{
-  background:#f7f9fb;
+background:#f8f9fb;
+font-weight:600;
 }
 
-.dashboard .metrics{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-  margin-bottom:15px;
+.dashboard{
+display:none;
+}
+
+.metrics{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:10px;
 }
 
 .metric{
-  background:#f4f7fb;
-  padding:12px;
-  border-radius:10px;
+background:var(--bg);
+padding:10px;
+border-radius:10px;
+font-size:13px;
 }
 
 .metric strong{
-  display:block;
-  font-size:16px;
+display:block;
+font-size:16px;
+margin-top:4px;
 }
 
 .green{color:var(--green);}
-.amber-row{background:#fff7df;}
 
 .badge{
-  display:inline-block;
-  padding:4px 8px;
-  background:var(--amber);
-  border-radius:6px;
-  font-size:12px;
-  font-weight:600;
-}
-
-.sticky-summary{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:white;
-  border-top:2px solid var(--green);
-  padding:8px;
-  display:flex;
-  justify-content:space-around;
-  font-size:13px;
-  font-weight:600;
+background:#ffe8b3;
+padding:4px 6px;
+border-radius:6px;
+font-size:12px;
 }
 
 .search-box{
-  position:relative;
+position:relative;
 }
 
 .suggestions{
-  position:absolute;
-  background:white;
-  width:100%;
-  border:1px solid #ddd;
-  border-radius:8px;
-  max-height:150px;
-  overflow:auto;
-  z-index:5;
+position:absolute;
+background:white;
+width:100%;
+border:1px solid #ddd;
+border-radius:8px;
+max-height:150px;
+overflow:auto;
+z-index:10;
 }
 
 .suggestions div{
-  padding:8px;
-  cursor:pointer;
+padding:6px;
+cursor:pointer;
 }
 
 .suggestions div:hover{
-  background:#f0f0f0;
+background:#f1f1f1;
+}
+
+@media(max-width:768px){
+table{font-size:11px;}
+th,td{padding:4px;}
 }
 </style>
 </head>
@@ -178,12 +173,13 @@ th{
 <div class="container">
 
 <div class="card">
+
 <label>Electricity Rate (₱ per kWh)</label>
-<input type="number" id="rate" placeholder="Example: 13">
+<input type="number" id="rate" placeholder="Example: 13" />
 
 <div class="search-box">
 <label>Search Appliance</label>
-<input type="text" id="search" placeholder="Start typing appliance...">
+<input type="text" id="search" placeholder="Type appliance..." />
 <div id="suggestions" class="suggestions"></div>
 </div>
 
@@ -203,39 +199,33 @@ th{
 <tbody id="tbody"></tbody>
 </table>
 
-<button class="add-btn" onclick="addRow()">+ Add Appliance</button>
-<button class="primary-btn" onclick="calculate()">Analyze Energy</button>
-</div>
-
-<div id="dashboard" class="card dashboard" style="display:none;"></div>
+<button type="button" class="add-btn" id="addRowBtn">+ Add Appliance</button>
+<button type="button" class="primary" id="analyzeBtn">Analyze Energy</button>
 
 </div>
 
-<div class="sticky-summary" id="summary">
-<span>Monthly ₱0</span>
-<span>Yearly ₱0</span>
-<span class="green">Savings ₱0</span>
+<div class="card dashboard" id="dashboard"></div>
+
 </div>
 
 <script>
-
-const db=[
-{name:"Air Conditioner 1HP",watts:900},
-{name:"Air Conditioner 1.5HP",watts:1200},
-{name:"Refrigerator Small",watts:150},
-{name:"Refrigerator Large",watts:300},
+const applianceDB=[
+{name:"Aircon 1HP",watts:900},
+{name:"Aircon 1.5HP",watts:1200},
+{name:"Refrigerator",watts:200},
 {name:"Electric Fan",watts:75},
 {name:"LED TV",watts:120},
 {name:"Rice Cooker",watts:1000},
-{name:"Washing Machine",watts:500},
 {name:"Microwave",watts:1100},
-{name:"Electric Kettle",watts:1500}
+{name:"Washing Machine",watts:500}
 ];
 
 const tbody=document.getElementById("tbody");
+const addRowBtn=document.getElementById("addRowBtn");
+const analyzeBtn=document.getElementById("analyzeBtn");
 
 function addRow(name="",watts=""){
-let tr=document.createElement("tr");
+const tr=document.createElement("tr");
 tr.innerHTML=`
 <td><input value="${name}"></td>
 <td><input type="number" value="${watts}"></td>
@@ -244,92 +234,95 @@ tr.innerHTML=`
 <td><input type="number" value="7"></td>
 <td><input type="number" value="4"></td>
 <td><input type="number" value="0"></td>
-<td><button class="remove-btn" onclick="this.closest('tr').remove();calculate()">X</button></td>
+<td><button type="button" class="remove-btn">X</button></td>
 `;
 tbody.appendChild(tr);
 }
 
 addRow();
 
-function format(n){
-return "₱"+n.toLocaleString("en-PH",{minimumFractionDigits:2});
+addRowBtn.addEventListener("click",()=>addRow());
+
+tbody.addEventListener("click",(e)=>{
+if(e.target.classList.contains("remove-btn")){
+e.target.closest("tr").remove();
+}
+});
+
+function format(num){
+return "₱"+num.toLocaleString("en-PH",{minimumFractionDigits:2});
 }
 
-function calculate(){
+analyzeBtn.addEventListener("click",()=>{
 let rate=parseFloat(document.getElementById("rate").value)||0;
 let rows=tbody.querySelectorAll("tr");
 
 let totalMonthly=0;
 let totalReduced=0;
-let appliances=[];
+let list=[];
 
-rows.forEach(r=>{
-let i=r.querySelectorAll("input");
-let name=i[0].value;
-let w=parseFloat(i[1].value)||0;
-let qty=parseFloat(i[2].value)||0;
-let hrs=parseFloat(i[3].value)||0;
-let days=parseFloat(i[4].value)||0;
-let weeks=parseFloat(i[5].value)||0;
-let red=parseFloat(i[6].value)||0;
+rows.forEach(row=>{
+let inputs=row.querySelectorAll("input");
+let name=inputs[0].value;
+let w=parseFloat(inputs[1].value)||0;
+let qty=parseFloat(inputs[2].value)||0;
+let hrs=parseFloat(inputs[3].value)||0;
+let days=parseFloat(inputs[4].value)||0;
+let weeks=parseFloat(inputs[5].value)||0;
+let reduce=parseFloat(inputs[6].value)||0;
 
 let monthly=(w/1000)*hrs*days*weeks*qty*rate;
-let reduced=(w/1000)*Math.max(hrs-red,0)*days*weeks*qty*rate;
+let reduced=(w/1000)*Math.max(hrs-reduce,0)*days*weeks*qty*rate;
 
 totalMonthly+=monthly;
 totalReduced+=reduced;
 
-appliances.push({name,monthly});
+list.push({name,monthly});
 });
 
 let yearly=totalMonthly*12;
 let newYearly=totalReduced*12;
 let savings=yearly-newYearly;
-let savingsPercent=yearly>0?(savings/yearly*100):0;
+let savingsPercent=yearly?((savings/yearly)*100):0;
 
-appliances.sort((a,b)=>b.monthly-a.monthly);
+list.sort((a,b)=>b.monthly-a.monthly);
+let biggest=list.length?list[0].name:"-";
 
-let biggest=appliances.length?appliances[0].name:"-";
-
-document.getElementById("summary").innerHTML=`
-<span>Monthly ${format(totalMonthly)}</span>
-<span>Yearly ${format(yearly)}</span>
-<span class="green">Savings ${format(savings)}</span>
-`;
-
-let dash=document.getElementById("dashboard");
+const dash=document.getElementById("dashboard");
 dash.style.display="block";
 dash.innerHTML=`
 <div class="metrics">
-<div class="metric"><small>Monthly</small><strong>${format(totalMonthly)}</strong></div>
-<div class="metric"><small>Yearly</small><strong>${format(yearly)}</strong></div>
-<div class="metric"><small>New Yearly</small><strong>${format(newYearly)}</strong></div>
-<div class="metric"><small>Savings</small><strong class="green">${format(savings)}</strong></div>
-<div class="metric"><small>Savings %</small><strong class="green">${savingsPercent.toFixed(1)}%</strong></div>
-<div class="metric"><small>Biggest Drain</small><strong><span class="badge">${biggest}</span></strong></div>
+<div class="metric">Monthly<strong>${format(totalMonthly)}</strong></div>
+<div class="metric">Yearly<strong>${format(yearly)}</strong></div>
+<div class="metric">New Yearly<strong>${format(newYearly)}</strong></div>
+<div class="metric">Savings<strong class="green">${format(savings)}</strong></div>
+<div class="metric">Savings %<strong class="green">${savingsPercent.toFixed(1)}%</strong></div>
+<div class="metric">Biggest Drain<strong><span class="badge">${biggest}</span></strong></div>
 </div>
 `;
-}
+});
 
-document.getElementById("search").addEventListener("input",function(){
-let value=this.value.toLowerCase();
-let box=document.getElementById("suggestions");
-box.innerHTML="";
+const search=document.getElementById("search");
+const suggestions=document.getElementById("suggestions");
+
+search.addEventListener("input",()=>{
+let value=search.value.toLowerCase();
+suggestions.innerHTML="";
 if(!value)return;
 
-db.filter(a=>a.name.toLowerCase().includes(value))
+applianceDB.filter(a=>a.name.toLowerCase().includes(value))
 .forEach(a=>{
 let div=document.createElement("div");
-div.textContent=a.name+" ("+a.watts+"W)";
-div.onclick=function(){
+div.textContent=`${a.name} (${a.watts}W)`;
+div.addEventListener("click",()=>{
 addRow(a.name,a.watts);
-box.innerHTML="";
-document.getElementById("search").value="";
-};
-box.appendChild(div);
+suggestions.innerHTML="";
+search.value="";
+});
+suggestions.appendChild(div);
 });
 });
-
 </script>
+
 </body>
 </html>
