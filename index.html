@@ -1,3 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UtilityWise PRO Energy Analyzer</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0B2A4A;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2EA3F2;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    color: black;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #2EA3F2;
+    color: white;
+}
+
+button {
+    background-color: #C62828;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.dashboard {
+    background: white;
+    color: black;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 8px;
+}
+
+.highlight {
+    background-color: #ffe082;
+}
+
+.pro-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e3f2fd;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>UtilityWise PRO Home Energy Analyzer</h1>
+
+<label>Cost per kWh (₱):</label>
+<input type="number" id="rate" placeholder="Example: 13">
+
+<table>
+<tr>
+<th>Appliance</th>
+<th>Watts</th>
+<th>Hours per Day</th>
+</tr>
+
+
+<tr>
+<td><input type="text" id="name1"></td>
+<td><input type="number" id="watts1"></td>
+<td><input type="number" id="hours1"></td>
+</tr>
+
+<tr>
+<td><input type="text" id="name2"></td>
+<td><input type="number" id="watts2"></td>
+<td><input type="number" id="hours2"></td>
+</tr>
+
+<tr>
+<td><input type="text" id="name3"></td>
+<td><input type="number" id="watts3"></td>
+<td><input type="number" id="hours3"></td>
+</tr>
+
+<tr>
+<td><input type="text" id="name4"></td>
+<td><input type="number" id="watts4"></td>
+<td><input type="number" id="hours4"></td>
+</tr>
+
+<tr>
+<td><input type="text" id="name5"></td>
+<td><input type="number" id="watts5"></td>
+<td><input type="number" id="hours5"></td>
+</tr>
+
+
+</table>
+
+<button onclick="calculate()">Analyze Energy Cost</button>
+
+<div id="results"></div>
+
+</div>
+
+<script>
 function formatMoney(value) {
     return "₱" + value.toLocaleString("en-PH", {
         minimumFractionDigits: 2,
@@ -9,7 +147,7 @@ function calculate() {
     let rate = parseFloat(document.getElementById("rate").value);
 
     if (!rate || rate <= 0) {
-        alert("Please enter a valid Cost per kWh before analyzing.");
+        alert("Please enter valid Cost per kWh.");
         return;
     }
 
@@ -24,40 +162,48 @@ function calculate() {
         if (name && watts > 0 && hours > 0) {
             let yearlyCost = (watts / 1000) * hours * 365 * rate;
             let monthlyCost = yearlyCost / 12;
+            let reducedYearly = yearlyCost * 0.8;
+            let savings = yearlyCost * 0.2;
 
             totalYearly += yearlyCost;
 
             appliances.push({
                 name,
                 yearlyCost,
-                monthlyCost
+                monthlyCost,
+                reducedYearly,
+                savings
             });
         }
     }
 
     if (appliances.length === 0) {
-        alert("Please enter at least one appliance correctly.");
+        alert("Please enter at least one appliance.");
         return;
     }
 
     appliances.sort((a, b) => b.yearlyCost - a.yearlyCost);
 
     let totalMonthly = totalYearly / 12;
+    let totalSavings = totalYearly * 0.2;
 
     let output = `
     <div class="dashboard">
         <h2>Energy Cost Dashboard</h2>
-        <p><strong>Total Estimated Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
-        <p><strong>Total Estimated Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
+        <p><strong>Total Monthly Cost:</strong> ${formatMoney(totalMonthly)}</p>
+        <p><strong>Total Yearly Cost:</strong> ${formatMoney(totalYearly)}</p>
+        <p><strong>Potential Yearly Savings (20% Reduction):</strong> ${formatMoney(totalSavings)}</p>
 
-        <h3>Appliance Ranking (Highest Cost First)</h3>
+        <h3>Appliance Ranking</h3>
         <table>
-            <tr>
-                <th>Rank</th>
-                <th>Appliance</th>
-                <th>Monthly Cost</th>
-                <th>Yearly Cost</th>
-            </tr>
+        <tr>
+        <th>Rank</th>
+        <th>Appliance</th>
+        <th>Monthly</th>
+        <th>Yearly</th>
+        <th>20% Reduced Yearly</th>
+        <th>Yearly Savings</th>
+        </tr>
     `;
 
     appliances.forEach((item, index) => {
@@ -68,12 +214,22 @@ function calculate() {
             <td>${item.name}</td>
             <td>${formatMoney(item.monthlyCost)}</td>
             <td>${formatMoney(item.yearlyCost)}</td>
+            <td>${formatMoney(item.reducedYearly)}</td>
+            <td>${formatMoney(item.savings)}</td>
         </tr>`;
     });
 
     output += `</table>
-        <p><strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.</p>
+
+    <div class="pro-box">
+    <strong>Top Energy Drain:</strong> ${appliances[0].name} is costing you ${formatMoney(appliances[0].yearlyCost)} per year.
+    </div>
+
     </div>`;
 
     document.getElementById("results").innerHTML = output;
 }
+</script>
+
+</body>
+</html>
