@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UtilityWise Energy Analyzer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -10,10 +10,14 @@
 <style>
 :root{
 --green:#4CD137;
---red:#E53935;
---navy1:#0B1F3A;
---navy2:#123B63;
---bg:#f4f7fb;
+--dark1:#0B1F3A;
+--dark2:#102B4C;
+--card:#132F54;
+--border:#1E3D66;
+--text:#EAF2FF;
+--muted:#9DB5D3;
+--accent:#FFB300;
+--danger:#E53935;
 }
 
 *{box-sizing:border-box;}
@@ -21,66 +25,78 @@
 body{
 margin:0;
 font-family:'Inter',sans-serif;
-background:linear-gradient(135deg,var(--navy1),var(--navy2));
+background:linear-gradient(135deg,var(--dark1),var(--dark2));
+color:var(--text);
 }
 
-h1{
+header{
+padding:30px 20px 10px;
 text-align:center;
-color:white;
-padding:20px 10px 0;
+}
+
+header img{
+height:60px;
+margin-bottom:10px;
 }
 
 .container{
 max-width:1100px;
 margin:auto;
-padding:15px;
+padding:20px;
 }
 
 .card{
-background:white;
-border-radius:14px;
-padding:18px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:20px;
 margin-bottom:20px;
+}
+
+h2{
+margin-top:0;
 }
 
 label{
 font-size:13px;
-font-weight:600;
+color:var(--muted);
 }
 
 input{
 width:100%;
-padding:8px;
-border-radius:8px;
-border:1px solid #ddd;
+padding:10px;
+border-radius:10px;
+border:1px solid var(--border);
+background:#0F2543;
+color:white;
 margin-top:6px;
 }
 
 button{
 border:none;
-border-radius:8px;
-padding:10px;
+border-radius:10px;
+padding:10px 14px;
 cursor:pointer;
 font-weight:600;
 }
 
 .primary{
 background:var(--green);
-color:white;
+color:black;
 width:100%;
 margin-top:10px;
 }
 
 .add-btn{
+background:transparent;
 border:2px solid var(--green);
-background:white;
 color:var(--green);
 width:100%;
 margin-top:10px;
 }
 
 .remove-btn{
-background:var(--red);
+background:var(--danger);
 color:white;
 padding:6px 8px;
 }
@@ -88,19 +104,19 @@ padding:6px 8px;
 table{
 width:100%;
 border-collapse:collapse;
-font-size:13px;
 margin-top:10px;
+font-size:13px;
 }
 
 th,td{
-padding:6px;
+padding:8px;
+border-bottom:1px solid var(--border);
 text-align:center;
-border-bottom:1px solid #eee;
 }
 
 th{
-background:#f8f9fb;
-font-weight:600;
+color:var(--muted);
+font-weight:500;
 }
 
 .dashboard{
@@ -109,79 +125,89 @@ display:none;
 
 .metrics{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-gap:10px;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
 }
 
 .metric{
-background:var(--bg);
-padding:10px;
-border-radius:10px;
-font-size:13px;
+background:#0F2543;
+padding:15px;
+border-radius:14px;
+}
+
+.metric small{
+color:var(--muted);
 }
 
 .metric strong{
 display:block;
-font-size:16px;
-margin-top:4px;
+font-size:18px;
+margin-top:5px;
 }
 
 .green{color:var(--green);}
-
 .badge{
-background:#ffe8b3;
-padding:4px 6px;
-border-radius:6px;
+background:var(--accent);
+color:black;
+padding:5px 8px;
+border-radius:8px;
 font-size:12px;
 }
 
-.search-box{
-position:relative;
-}
-
-.suggestions{
-position:absolute;
-background:white;
+.modal{
+position:fixed;
+top:0;
+left:0;
 width:100%;
-border:1px solid #ddd;
-border-radius:8px;
-max-height:150px;
-overflow:auto;
-z-index:10;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
-.suggestions div{
-padding:6px;
+.modal-content{
+background:var(--card);
+width:100%;
+max-width:600px;
+max-height:80vh;
+overflow:auto;
+border-radius:16px;
+padding:20px;
+}
+
+.appliance-item{
+padding:10px;
+border-bottom:1px solid var(--border);
 cursor:pointer;
 }
 
-.suggestions div:hover{
-background:#f1f1f1;
+.appliance-item:hover{
+background:#0F2543;
 }
 
 @media(max-width:768px){
 table{font-size:11px;}
-th,td{padding:4px;}
 }
 </style>
 </head>
 
 <body>
 
-<h1>UtilityWise Energy Analyzer</h1>
+<header>
+<img src="UtilityWise.png">
+<h1>Energy Analyzer</h1>
+</header>
 
 <div class="container">
 
 <div class="card">
 
 <label>Electricity Rate (₱ per kWh)</label>
-<input type="number" id="rate" placeholder="Example: 13" />
+<input type="number" id="rate" placeholder="Example: 13">
 
-<div class="search-box">
-<label>Search Appliance</label>
-<input type="text" id="search" placeholder="Type appliance..." />
-<div id="suggestions" class="suggestions"></div>
-</div>
+<button class="add-btn" id="openModal">+ Add Appliance</button>
 
 <table>
 <thead>
@@ -199,8 +225,7 @@ th,td{padding:4px;}
 <tbody id="tbody"></tbody>
 </table>
 
-<button type="button" class="add-btn" id="addRowBtn">+ Add Appliance</button>
-<button type="button" class="primary" id="analyzeBtn">Analyze Energy</button>
+<button class="primary" id="analyzeBtn">Analyze Energy</button>
 
 </div>
 
@@ -208,40 +233,72 @@ th,td{padding:4px;}
 
 </div>
 
+<div class="modal" id="modal">
+<div class="modal-content">
+<h2>Select Appliance</h2>
+<input type="text" id="searchInput" placeholder="Search appliance...">
+<div id="applianceList"></div>
+</div>
+</div>
+
 <script>
+
 const applianceDB=[
-{name:"Aircon 1HP",watts:900},
-{name:"Aircon 1.5HP",watts:1200},
-{name:"Refrigerator",watts:200},
-{name:"Electric Fan",watts:75},
-{name:"LED TV",watts:120},
-{name:"Rice Cooker",watts:1000},
-{name:"Microwave",watts:1100},
-{name:"Washing Machine",watts:500}
+{category:"Cooling",name:"Aircon 1HP",watts:900},
+{category:"Cooling",name:"Aircon 1.5HP",watts:1200},
+{category:"Cooling",name:"Aircon 2HP",watts:1800},
+{category:"Kitchen",name:"Rice Cooker Standard",watts:1000},
+{category:"Kitchen",name:"Microwave 25L",watts:1100},
+{category:"Kitchen",name:"Electric Kettle",watts:1500},
+{category:"Laundry",name:"Washing Machine Top Load",watts:500},
+{category:"Laundry",name:"Dryer Machine",watts:2000},
+{category:"Entertainment",name:"LED TV 40 inch",watts:120},
+{category:"Lighting",name:"LED Bulb 10W",watts:10},
+{category:"Cooling",name:"Electric Fan",watts:75},
+{category:"Cooling",name:"Refrigerator Inverter",watts:200},
+{category:"Bathroom",name:"Shower Heater",watts:3500}
 ];
 
 const tbody=document.getElementById("tbody");
-const addRowBtn=document.getElementById("addRowBtn");
-const analyzeBtn=document.getElementById("analyzeBtn");
+const modal=document.getElementById("modal");
+const applianceList=document.getElementById("applianceList");
+
+document.getElementById("openModal").onclick=()=>modal.style.display="flex";
+modal.onclick=(e)=>{if(e.target===modal)modal.style.display="none";};
+
+function renderAppliances(filter=""){
+applianceList.innerHTML="";
+applianceDB
+.filter(a=>a.name.toLowerCase().includes(filter.toLowerCase()))
+.forEach(a=>{
+let div=document.createElement("div");
+div.className="appliance-item";
+div.innerHTML=`${a.name} <small>(${a.watts}W)</small>`;
+div.onclick=()=>{
+addRow(a.name,a.watts);
+modal.style.display="none";
+};
+applianceList.appendChild(div);
+});
+}
+renderAppliances();
+
+document.getElementById("searchInput").oninput=(e)=>renderAppliances(e.target.value);
 
 function addRow(name="",watts=""){
-const tr=document.createElement("tr");
+let tr=document.createElement("tr");
 tr.innerHTML=`
-<td><input value="${name}"></td>
-<td><input type="number" value="${watts}"></td>
+<td>${name}</td>
+<td>${watts}</td>
 <td><input type="number" value="1"></td>
 <td><input type="number" value="1"></td>
 <td><input type="number" value="7"></td>
 <td><input type="number" value="4"></td>
 <td><input type="number" value="0"></td>
-<td><button type="button" class="remove-btn">X</button></td>
+<td><button class="remove-btn">X</button></td>
 `;
 tbody.appendChild(tr);
 }
-
-addRow();
-
-addRowBtn.addEventListener("click",()=>addRow());
 
 tbody.addEventListener("click",(e)=>{
 if(e.target.classList.contains("remove-btn")){
@@ -249,27 +306,24 @@ e.target.closest("tr").remove();
 }
 });
 
-function format(num){
-return "₱"+num.toLocaleString("en-PH",{minimumFractionDigits:2});
+function format(n){
+return "₱"+n.toLocaleString("en-PH",{minimumFractionDigits:2});
 }
 
-analyzeBtn.addEventListener("click",()=>{
+document.getElementById("analyzeBtn").onclick=()=>{
 let rate=parseFloat(document.getElementById("rate").value)||0;
 let rows=tbody.querySelectorAll("tr");
 
-let totalMonthly=0;
-let totalReduced=0;
-let list=[];
+let totalMonthly=0,totalReduced=0,list=[];
 
 rows.forEach(row=>{
 let inputs=row.querySelectorAll("input");
-let name=inputs[0].value;
-let w=parseFloat(inputs[1].value)||0;
-let qty=parseFloat(inputs[2].value)||0;
-let hrs=parseFloat(inputs[3].value)||0;
-let days=parseFloat(inputs[4].value)||0;
-let weeks=parseFloat(inputs[5].value)||0;
-let reduce=parseFloat(inputs[6].value)||0;
+let w=parseFloat(row.children[1].innerText)||0;
+let qty=parseFloat(inputs[0].value)||0;
+let hrs=parseFloat(inputs[1].value)||0;
+let days=parseFloat(inputs[2].value)||0;
+let weeks=parseFloat(inputs[3].value)||0;
+let reduce=parseFloat(inputs[4].value)||0;
 
 let monthly=(w/1000)*hrs*days*weeks*qty*rate;
 let reduced=(w/1000)*Math.max(hrs-reduce,0)*days*weeks*qty*rate;
@@ -277,51 +331,30 @@ let reduced=(w/1000)*Math.max(hrs-reduce,0)*days*weeks*qty*rate;
 totalMonthly+=monthly;
 totalReduced+=reduced;
 
-list.push({name,monthly});
+list.push({name:row.children[0].innerText,monthly});
 });
 
 let yearly=totalMonthly*12;
 let newYearly=totalReduced*12;
 let savings=yearly-newYearly;
-let savingsPercent=yearly?((savings/yearly)*100):0;
+let percent=yearly?((savings/yearly)*100):0;
 
 list.sort((a,b)=>b.monthly-a.monthly);
 let biggest=list.length?list[0].name:"-";
 
-const dash=document.getElementById("dashboard");
-dash.style.display="block";
-dash.innerHTML=`
+document.getElementById("dashboard").style.display="block";
+document.getElementById("dashboard").innerHTML=`
 <div class="metrics">
-<div class="metric">Monthly<strong>${format(totalMonthly)}</strong></div>
-<div class="metric">Yearly<strong>${format(yearly)}</strong></div>
-<div class="metric">New Yearly<strong>${format(newYearly)}</strong></div>
-<div class="metric">Savings<strong class="green">${format(savings)}</strong></div>
-<div class="metric">Savings %<strong class="green">${savingsPercent.toFixed(1)}%</strong></div>
-<div class="metric">Biggest Drain<strong><span class="badge">${biggest}</span></strong></div>
+<div class="metric"><small>Monthly</small><strong>${format(totalMonthly)}</strong></div>
+<div class="metric"><small>Yearly</small><strong>${format(yearly)}</strong></div>
+<div class="metric"><small>New Yearly</small><strong>${format(newYearly)}</strong></div>
+<div class="metric"><small>Savings</small><strong class="green">${format(savings)}</strong></div>
+<div class="metric"><small>Savings %</small><strong class="green">${percent.toFixed(1)}%</strong></div>
+<div class="metric"><small>Biggest Drain</small><strong><span class="badge">${biggest}</span></strong></div>
 </div>
 `;
-});
+};
 
-const search=document.getElementById("search");
-const suggestions=document.getElementById("suggestions");
-
-search.addEventListener("input",()=>{
-let value=search.value.toLowerCase();
-suggestions.innerHTML="";
-if(!value)return;
-
-applianceDB.filter(a=>a.name.toLowerCase().includes(value))
-.forEach(a=>{
-let div=document.createElement("div");
-div.textContent=`${a.name} (${a.watts}W)`;
-div.addEventListener("click",()=>{
-addRow(a.name,a.watts);
-suggestions.innerHTML="";
-search.value="";
-});
-suggestions.appendChild(div);
-});
-});
 </script>
 
 </body>
